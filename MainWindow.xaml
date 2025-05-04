@@ -1,0 +1,20 @@
+﻿<Window x:Class="BankManagementSystem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Bank Management System" Height="600" Width="800">
+    <Grid>
+        <TextBlock FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" Text="Bank Management System"/>
+
+        <Button x:Name="ManageCustomersButton" Content="Manage Customers" Width="200" Height="50" Margin="50,330,543.6,190.4" Click="OpenCustomerManagementWindow"/>
+        
+        <Button x:Name="UserManagementButton" Content="User Management" Width="200" Height="50" Click="OpenUserManagement_Click" Margin="500,250,0,0"/>
+
+        <Button Content="Transactions" Width="200" Height="50" Margin="300,330,0,190.4" HorizontalAlignment="Left" Click="OpenTransactionWindow"/>
+
+        <Button Content="Account Statements" Width="200" Height="50" Margin="50,250,0,0" HorizontalAlignment="Left" Click="OpenAccountStatementWindow"/>
+
+        <Button Content="Loan Management" Width="200" Height="50" Margin="300,250,0,0" HorizontalAlignment="Left" Click="OpenLoanWindow"/>
+
+        <Button Content="Exit" Width="200" Height="50" Margin="550,450,0,0" HorizontalAlignment="Left" Click="ExitApplication"/>
+    </Grid>
+</Window>

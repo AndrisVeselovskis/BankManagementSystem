@@ -1,0 +1,90 @@
+﻿<Window x:Class="BankManagementSystem.LoanWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Loan Management" Height="600" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Title -->
+            <RowDefinition Height="Auto"/>
+            <!-- Loan Application -->
+            <RowDefinition Height="*"/>
+            <!-- Loan List -->
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock FontSize="28" HorizontalAlignment="Center" Text="Loan Management" Margin="0,10,0,20" Grid.Row="0"/>
+
+        <!-- Loan Application Section -->
+        <Border BorderThickness="1" BorderBrush="Gray" Padding="10" Margin="0,0,0,20" Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Account Number:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Margin="5"/>
+                <TextBox Name="AccountNumberTextBox" Width="180" Grid.Row="0" Grid.Column="1" Margin="5"/>
+
+                <TextBlock Text="Loan Type:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Margin="5"/>
+                <ComboBox x:Name="LoanTypeComboBox" Width="180" Grid.Row="1" Grid.Column="1" Margin="5">
+                    <ComboBoxItem Content="Personal"/>
+                    <ComboBoxItem Content="Home"/>
+                    <ComboBoxItem Content="Car"/>
+                </ComboBox>
+
+                <TextBlock Text="Amount:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Margin="5"/>
+                <TextBox x:Name="LoanAmountTextBox" Width="180" Margin="5" Grid.Row="2" Grid.Column="1" 
+                         PreviewTextInput="LoanAmountTextBox_PreviewTextInput"/>
+
+                <Button Content="Apply" Width="120" Height="30" Margin="5"
+                        Grid.Row="0" Grid.Column="3" Click="ApplyLoan_Click"/>
+                <Button Content="Pay Off" Width="120" Height="30" Margin="5"
+                        Grid.Row="1" Grid.Column="3" Click="PayLoanButton_Click"/>
+                <Button x:Name="ApproveLoanButton" Content="Approve" Width="120" Height="30" Margin="5"
+                        Grid.Row="2" Grid.Column="3" Click="ApproveLoan_Click"/>
+                <Button x:Name="RejectLoanButton" Content="Reject" Width="120" Height="30" Margin="5"
+                        Grid.Row="3" Grid.Column="3" Click="RejectLoan_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- Loan List Section -->
+        <TabControl Grid.Row="2">
+            <TabItem Header="Pending Loans">
+                <ListView x:Name="PendingLoansListView" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Loan ID" DisplayMemberBinding="{Binding LoanID}" Width="80"/>
+                            <GridViewColumn Header="Account Number" DisplayMemberBinding="{Binding AccountNumber}" Width="120"/>
+                            <GridViewColumn Header="Loan Type" DisplayMemberBinding="{Binding LoanType}" Width="100"/>
+                            <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" Width="120"/>
+                            <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="100"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Approved Loans">
+                <ListView x:Name="ApprovedLoansListView" Margin="5">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Loan ID" DisplayMemberBinding="{Binding LoanID}" Width="80"/>
+                            <GridViewColumn Header="Account Number" DisplayMemberBinding="{Binding AccountNumber}" Width="120"/>
+                            <GridViewColumn Header="Loan Type" DisplayMemberBinding="{Binding LoanType}" Width="100"/>
+                            <GridViewColumn Header="Remaining Amount" DisplayMemberBinding="{Binding RemainingAmount}" Width="120"/>
+                            <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="100"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

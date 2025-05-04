@@ -1,0 +1,202 @@
+﻿<Window x:Class="BankManagementSystem.CustomerManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:BankManagementSystem"
+        Title="Customer Management" Height="800" Width="1200">
+
+    <Window.Resources>
+        <local:DateDifferenceConverter x:Key="DateDifferenceConverter"/>
+        <local:StatusColorConverter x:Key="StatusColorConverter"/>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Title -->
+            <RowDefinition Height="Auto" />
+            <!-- Input Fields -->
+            <RowDefinition Height="Auto" />
+            <!-- Buttons -->
+            <RowDefinition Height="Auto" />
+            <!-- Search + Filter -->
+            <RowDefinition Height="*" />
+            <!-- Customer List -->
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Text="Customer Management" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10"/>
+
+        <!-- Input Fields -->
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,20" >
+            <WrapPanel Margin="0,5">
+                <Label Content="Account Number:" Width="120"/>
+                <TextBox Name="AccountNumberTextBox" Width="200"/>
+
+                <Label Content="First Name:" Width="100" Margin="20,0,0,0"/>
+                <TextBox Name="FirstNameTextBox" Width="200"/>
+
+                <Label Content="Last Name:" Width="100" Margin="20,0,0,0"/>
+                <TextBox Name="LastNameTextBox" Width="200"/>
+            </WrapPanel>
+
+            <WrapPanel Margin="0,5">
+                <Label Content="Balance:" Width="120"/>
+                <TextBox Name="BalanceTextBox" Width="200" PreviewTextInput="BalanceTextBox_PreviewTextInput"/>
+
+                <Label Content="Card Type:" Width="100" Margin="20,0,0,0"/>
+                <ComboBox x:Name="CardTypeComboBox" Width="150">
+                    <ComboBoxItem Content="Credit"/>
+                    <ComboBoxItem Content="Debit"/>
+                    <ComboBoxItem Content="Gold"/>
+                    <ComboBoxItem Content="None"/>
+                </ComboBox>
+
+                <Label Content="Status:" Width="100" Margin="20,0,0,0"/>
+                <CheckBox x:Name="CardActiveCheckBox" Content="Active" Width="100"/>
+            </WrapPanel>
+
+            <WrapPanel Margin="0,5">
+                <Label Content="Terms:" Width="120"/>
+                <DatePicker x:Name="CardTermsPicker" Width="200" SelectedDateFormat="Short"/>
+            </WrapPanel>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+            <Button Content="Add" Width="100" Margin="5" Click="AddCustomer_Click"/>
+            <Button Content="Edit" Width="100" Margin="5" Click="EditCustomer_Click"/>
+            <Button Content="Delete" Width="100" Margin="5" Click="DeleteCustomer_Click"/>
+        </StackPanel>
+
+        <!-- Search and Filters -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10">
+            <Label Content="Search:" VerticalAlignment="Center"/>
+            <TextBox x:Name="SearchTextBox" Width="200" Margin="5,0" TextChanged="SearchTextBox_TextChanged"/>
+
+            <Label Content="Filter by Card Type:" Margin="20,0,0,0" VerticalAlignment="Center"/>
+            <ComboBox x:Name="CardTypeFilterComboBox" Width="120" Margin="5,0" SelectionChanged="CardTypeComboBox_SelectionChanged">
+                <ComboBoxItem Content="All" IsSelected="True"/>
+                <ComboBoxItem Content="Credit"/>
+                <ComboBoxItem Content="Debit"/>
+                <ComboBoxItem Content="Gold"/>
+                <ComboBoxItem Content="None"/>
+            </ComboBox>
+
+            <Label Content="Status:" Margin="20,0,0,0" VerticalAlignment="Center"/>
+            <ComboBox x:Name="StatusFilterComboBox" Width="100" Margin="5,0" SelectionChanged="StatusFilter_SelectionChanged">
+                <ComboBoxItem Content="All" IsSelected="True"/>
+                <ComboBoxItem Content="Active"/>
+                <ComboBoxItem Content="Inactive"/>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Customer List -->
+        <ListView Name="CustomerListView" Grid.Row="4" Margin="0,10" SelectionMode="Single">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="110">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="AccountNumber">Account Number</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="AccountNumber"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="120">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="FirstName">First Name</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="FirstName"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="120">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="LastName">Last Name</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="LastName"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Balance">Balance</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Balance}" Background="{Binding Balance, Converter={StaticResource StatusColorConverter}}" Padding="2"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="CardType">Card Type</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="CardType"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="80">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Status">Status</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding StatusText}" Background="{Binding IsActive, Converter={StaticResource StatusColorConverter}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="Terms">Terms</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding CardTerms}" Background="{Binding CardTerms, Converter={StaticResource DateDifferenceConverter}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Has Deposit" DisplayMemberBinding="{Binding HasDeposit}" Width="80" >
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Tag" Value="HasDeposit"/>
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Total Deposits" DisplayMemberBinding="{Binding TotalDeposits}" Width="120">
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Tag" Value="TotalDeposits"/>
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="80">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="HasLoan" >Has Loan</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="HasLoan"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="130">
+                        <GridViewColumn.Header>
+                            <GridViewColumnHeader Tag="ActiveLoanAmount" >Active Loans</GridViewColumnHeader>
+                        </GridViewColumn.Header>
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="ActiveLoanAmount" StringFormat='{}{0:N2}'/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

@@ -1,0 +1,64 @@
+﻿<Window x:Class="BankManagementSystem.UserManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="User Management" Height="600" Width="700">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Text="User Management" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <!-- Input Section -->
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,10">
+            <WrapPanel Margin="0,5">
+                <Label Content="Username:" Width="100"/>
+                <TextBox x:Name="UsernameTextBox" Width="200"/>
+            </WrapPanel>
+
+            <WrapPanel Margin="0,5">
+                <Label Content="Password:" Width="100"/>
+                <PasswordBox x:Name="PasswordBox" Width="200"/>
+            </WrapPanel>
+
+            <WrapPanel Margin="0,5">
+                <Label Content="Role:" Width="100"/>
+                <ComboBox x:Name="RoleComboBox" Width="150" SelectionChanged="RoleComboBox_SelectionChanged">
+                    <ComboBoxItem Content="Admin"/>
+                    <ComboBoxItem Content="Klient"/>
+                </ComboBox>
+            </WrapPanel>
+
+            <WrapPanel Margin="0,5">
+                <Label Content="Account Number:" Width="100"/>
+                <TextBox x:Name="AccountNumberTextBox" Width="200"/>
+            </WrapPanel>
+
+            <WrapPanel Margin="0,5">
+                <Label Content="Can Login:" Width="100"/>
+                <CheckBox x:Name="CanLoginCheckBox" Content="Allow Login"/>
+            </WrapPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+                <Button Content="Add User" Width="100" Margin="5" Click="AddUserButton_Click"/>
+                <Button Content="Update User" Width="100" Margin="5" Click="UpdateUserButton_Click"/>
+                <Button Content="Delete User" Width="100" Margin="5" Click="DeleteUserButton_Click"/>
+                <Button Content="Close" Width="100" Margin="5" Click="CloseButton_Click"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- User List -->
+        <ListView x:Name="UserListView" Grid.Row="2" Margin="0,10" SelectionChanged="UserListView_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="User ID" DisplayMemberBinding="{Binding Id}" Width="80"/>
+                    <GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}" Width="150"/>
+                    <GridViewColumn Header="Role" DisplayMemberBinding="{Binding Role}" Width="100"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</Window>

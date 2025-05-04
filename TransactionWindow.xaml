@@ -1,0 +1,49 @@
+﻿<Window x:Class="BankManagementSystem.TransactionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Transaction Management" Height="600" Width="800">
+
+    <Grid Margin="10">
+
+        <TextBlock FontSize="28" HorizontalAlignment="Center" Text="Transaction Management" Margin="0,10,0,0"/>
+
+        <!-- Account Number Input -->
+        <TextBlock Text="Account Number:" Margin="10,70,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="AccountNumberTextBox" Width="200" Margin="150,70,0,0" VerticalAlignment="Top"/>
+
+        <!-- Transaction Amount -->
+        <TextBlock Text="Amount:" Margin="10,120,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="AmountTextBox" Width="200" Margin="150,120,0,0" VerticalAlignment="Top"
+         PreviewTextInput="AmountTextBox_PreviewTextInput"
+         PreviewKeyDown="AmountTextBox_PreviewKeyDown"
+         DataObject.Pasting="AmountTextBox_Pasting"/>
+
+        <!-- Transaction Type -->
+        <TextBlock Text="Transaction Type:" Margin="10,170,0,0" VerticalAlignment="Top"/>
+        <ComboBox Name="TransactionTypeComboBox" SelectionChanged="TransactionTypeComboBox_SelectionChanged" Width="200" Margin="150,170,0,0" VerticalAlignment="Top">
+            <ComboBoxItem Content="Deposit"/>
+            <ComboBoxItem Content="Withdraw"/>
+            <ComboBoxItem Content="Transfer"/>
+        </ComboBox>
+
+        <!-- Transfer Target (Only for Transfers) -->
+        <TextBlock Text="Transfer To (Account #):" Margin="10,220,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="TransferToTextBox" Width="200" Margin="150,220,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+
+        <!-- Transaction Button -->
+        <Button Content="Process Transaction" Width="200" Margin="150,280,0,0" VerticalAlignment="Top" Click="ProcessTransaction_Click"/>
+
+        <!-- Transaction History Display -->
+        <ListView Name="TransactionListView" Margin="10,350,10,10">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Account Number" DisplayMemberBinding="{Binding AccountNumber}" Width="150"/>
+                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}" Width="100"/>
+                    <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" Width="100"/>
+                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date}" Width="200"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</Window>
