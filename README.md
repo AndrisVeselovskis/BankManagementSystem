@@ -18,8 +18,9 @@ A Windows Forms-based C# application to manage simple banking operations.
 git clone https://github.com/AndrisVeselovskis/BankManagementSystem.git
 2. Open the solution in Visual Studio
 3. Build and run
-4. To enter as admin Username: admin Pasword: admin123
-5. To enter as klient Username: klient1 Pasword: klient123
+4. Db shema in db_structure.sql
+5. To enter as admin Username: admin Pasword: admin123
+6. To enter as klient Username: klient1 Pasword: klient123
 
 ## 📌 TODO
 - Improve UI layout and responsiveness
