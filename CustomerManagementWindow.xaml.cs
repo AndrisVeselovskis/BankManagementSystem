@@ -254,9 +254,13 @@ namespace BankManagementSystem
                 COALESCE(C.IsActive, 0) AS IsActive, 
                 COALESCE(C.CardTerms, 'N/A') AS CardTerms,
                 COALESCE((
-                    SELECT SUM(T.Amount)
-                    FROM Transactions T
-                    WHERE T.AccountNumber = A.AccountNumber AND T.Type = 'Deposit'
+                    SELECT SUM(CASE 
+                        WHEN T.Type = 'Deposit' THEN T.Amount 
+                        WHEN T.Type = 'Withdraw' THEN -T.Amount 
+                        ELSE 0 
+                        END)
+                        FROM Transactions T
+                        WHERE T.AccountNumber = A.AccountNumber
                     ), 0) AS TotalDeposits,
                 COALESCE((
                     SELECT SUM(L.RemainingAmount)

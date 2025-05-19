@@ -90,14 +90,26 @@ namespace BankManagementSystem
 
                 foreach (var tx in transactions)
                 {
-                    // Reverse the effect to calculate past balances
-                    if (tx.Type == "Deposit")
-                        balance -= tx.Amount;
-                    else if (tx.Type == "Withdraw")
-                        balance += tx.Amount;
-                    else if (tx.Type == "Transfer")
-                        balance -= tx.Amount; // you may need to adjust this if tracking incoming transfers separately
-
+                    switch (tx.Type)
+                    {
+                        case "Deposit":
+                            balance -= tx.Amount;
+                            break;
+                        case "Withdraw":
+                        case "LoanPayment":
+                            balance += tx.Amount;
+                            break;
+                        case "Transfer":
+                            balance -= tx.Amount;
+                            break;
+                        case "LoanApproved":
+                            balance -= tx.Amount;
+                            break;
+                        default:
+                            // Treat unrecognized types as outgoing by default
+                            balance -= tx.Amount;
+                            break;
+                    }
                     runningBalances.Add(balance);
                 }
 

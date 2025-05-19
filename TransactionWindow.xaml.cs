@@ -162,6 +162,53 @@ namespace BankManagementSystem
                         }
                     }
 
+                    // Get sender's current balance
+                    decimal senderBalance = 0;
+                    string balanceQuery = "SELECT Balance FROM Accounts WHERE AccountNumber = @AccountNumber";
+                    using (var balanceCmd = new SQLiteCommand(balanceQuery, connection))
+                    {
+                        balanceCmd.Parameters.AddWithValue("@AccountNumber", accountNumber);
+                        senderBalance = Convert.ToDecimal(balanceCmd.ExecuteScalar());
+                    }
+
+                    // Check limit
+                    if (senderBalance < amount)
+                    {
+                        MessageBox.Show("Insufficient funds for transfer.", "Blocked", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Check if it's a credit card and get current balance
+                    bool isCreditCard = false;
+                    decimal currentBalance = 0;
+                    string typeQuery = "SELECT Balance, CardType FROM Accounts A LEFT JOIN Cards C ON A.AccountNumber = C.AccountNumber WHERE A.AccountNumber = @AccountNumber";
+                    using (var typeCmd = new SQLiteCommand(typeQuery, connection))
+                    {
+                        typeCmd.Parameters.AddWithValue("@AccountNumber", accountNumber);
+                        using (var reader = typeCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                currentBalance = Convert.ToDecimal(reader["Balance"]);
+                                isCreditCard = reader["CardType"].ToString() == "Credit";
+                            }
+                        }
+                    }
+
+                    // Enforce overdraft rule
+                    if (isCreditCard && (currentBalance - amount) < -2000)
+                    {
+                        MessageBox.Show("Credit card cannot go below -2000.", "Limit Reached", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // For regular accounts (not credit), no overdraft allowed
+                    if (!isCreditCard && (currentBalance - amount) < 0)
+                    {
+                        MessageBox.Show("Insufficient balance. Cannot overdraft.", "Limit Reached", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
                     // Proceed with transfer
                     ExecuteUpdate(connection, accountNumber, -amount);
                     ExecuteUpdate(connection, transferTo, amount);

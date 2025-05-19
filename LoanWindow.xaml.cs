@@ -222,8 +222,35 @@ namespace BankManagementSystem
 
                     if (balance < payment)
                     {
-                        MessageBox.Show("Insufficient balance.");
-                        return;
+                        // Get card type
+                        string cardType = "None";
+                        using (var typeCmd = new SQLiteCommand("SELECT IFNULL(C.CardType, 'None') AS CardType FROM Cards C WHERE AccountNumber = @AccountNumber", connection))
+                        {
+                            typeCmd.Parameters.AddWithValue("@AccountNumber", accountNumber);
+                            var result = typeCmd.ExecuteScalar();
+                            cardType = result?.ToString() ?? "None";
+                        }
+
+                        // Calculate projected balance after payment
+                        decimal projectedBalance = balance - payment;
+
+                        // Apply credit card rules
+                        if (cardType == "Credit")
+                        {
+                            if (projectedBalance < -2000)
+                            {
+                                MessageBox.Show("Payment would exceed the credit limit of -2000.", "Credit Limit Reached", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (projectedBalance < 0)
+                            {
+                                MessageBox.Show("Insufficient balance for loan payment.", "Insufficient Funds", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                return;
+                            }
+                        }
                     }
 
                     using (var transaction = connection.BeginTransaction())
@@ -359,6 +386,7 @@ namespace BankManagementSystem
 
                 MessageBox.Show($"Loan {status.ToLower()} successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 LoadPendingLoans();
+                LoadApprovedLoans();
             }
         }
     }

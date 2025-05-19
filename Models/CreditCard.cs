@@ -15,5 +15,10 @@ namespace BankManagementSystem.Models
             base.ShowCardDetails();
             Console.WriteLine($"Credit Limit: {CreditLimit}");
         }
+
+        public CreditCard()
+        {
+            CreditLimit = -2000; // Default credit limit
+        }
     }
 }
