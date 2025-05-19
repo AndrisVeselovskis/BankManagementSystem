@@ -62,7 +62,7 @@ namespace BankManagementSystem
 
         private void OpenLoanWindow(object sender, RoutedEventArgs e)
         {
-            LoanWindow loanWindow = new LoanWindow(userRole);
+            LoanWindow loanWindow = new LoanWindow(userRole, loggedInUserId);
             loanWindow.Show();
         }
 

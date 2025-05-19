@@ -9,11 +9,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+
 namespace BankManagementSystem
 {
     public partial class LoanWindow : Window
     {
         private readonly string userRole;
+        private int loggedInUserId;
 
         public class Loan
         {
@@ -28,10 +30,11 @@ namespace BankManagementSystem
         private ObservableCollection<Loan> loans = new ObservableCollection<Loan>();
         private List<Loan> approvedLoans = new List<Loan>();
 
-        public LoanWindow(string role)
+        public LoanWindow(string role, int userId)
         {
             InitializeComponent();
             userRole = role;
+            loggedInUserId = userId;
             PendingLoansListView.ItemsSource = loans;
             LoadPendingLoans();
             LoadApprovedLoans();
@@ -65,6 +68,14 @@ namespace BankManagementSystem
             string loanType = ((ComboBoxItem)LoanTypeComboBox.SelectedItem)?.Content.ToString();
             string amountText = LoanAmountTextBox.Text.Replace(',', '.');
 
+            bool isAdmin = DatabaseHelper.IsUserAdmin(loggedInUserId);
+
+            if (!isAdmin && !DatabaseHelper.IsUserAccountOwner(loggedInUserId, accountNumber))
+            {
+                MessageBox.Show("Access denied! You can only manage your own account.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (!decimal.TryParse(LoanAmountTextBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal amount) || amount <= 0)
             {
                 MessageBox.Show("Invalid loan amount.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -82,7 +93,7 @@ namespace BankManagementSystem
             {
                 connection.Open();
 
-                // 🔍 Check if account exists
+                // Check if account exists
                 string checkAccountQuery = "SELECT COUNT(1) FROM Accounts WHERE AccountNumber = @AccountNumber";
                 using (var checkCmd = new SQLiteCommand(checkAccountQuery, connection))
                 {
@@ -340,7 +351,7 @@ namespace BankManagementSystem
                 {
                     connection.Open();
 
-                    // 🔍 Check if account exists
+                    //  Check if account exists
                     string checkAccountQuery = "SELECT COUNT(1) FROM Accounts WHERE AccountNumber = @AccountNumber";
                     using (var checkCmd = new SQLiteCommand(checkAccountQuery, connection))
                     {

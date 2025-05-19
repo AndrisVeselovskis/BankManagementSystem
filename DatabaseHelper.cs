@@ -91,7 +91,7 @@ namespace BankManagementSystem
                             FirstName = reader.GetString(1),
                             LastName = reader.GetString(2)
                         };
-                        customerAccount.SetBalance(Convert.ToDecimal(reader["Balance"])); // ✅ Fix
+                        customerAccount.SetBalance(Convert.ToDecimal(reader["Balance"]));
                         accounts.Add(customerAccount);
                     }
                 }
