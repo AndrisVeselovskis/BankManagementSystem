@@ -46,3 +46,11 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	PRIMARY KEY("UserID" AUTOINCREMENT)
 );
 COMMIT;
+
+-- Insert Admin
+INSERT INTO Users (Username, Password, Role)
+VALUES ('admin', 'admin123', 'Admin');
+
+-- Insert Klient
+INSERT INTO Users (Username, Password, Role)
+VALUES ('klient', 'klient123', 'Klient');
