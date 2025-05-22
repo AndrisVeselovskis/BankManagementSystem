@@ -7,14 +7,25 @@ namespace BankManagementSystem
 {
     public partial class AccountStatementWindow : Window
     {
-        public AccountStatementWindow()
+        private int loggedInUserId;
+
+        public AccountStatementWindow(int userId)
         {
             InitializeComponent();
+            loggedInUserId = userId;
         }
 
         private void GenerateStatement_Click(object sender, RoutedEventArgs e)
         {
             string accountNumber = AccountNumberTextBox.Text.Trim();
+
+            if (!DatabaseHelper.IsUserAdmin(loggedInUserId) &&
+                !DatabaseHelper.IsUserAccountOwner(loggedInUserId, accountNumber))
+            {
+                MessageBox.Show("Access denied! You can only view statements for your own accounts.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (string.IsNullOrEmpty(accountNumber))
             {
                 MessageBox.Show("Please enter an account number.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

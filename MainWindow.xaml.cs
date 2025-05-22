@@ -56,7 +56,7 @@ namespace BankManagementSystem
 
         private void OpenAccountStatementWindow(object sender, RoutedEventArgs e)
         {
-            AccountStatementWindow statementWindow = new AccountStatementWindow();
+            AccountStatementWindow statementWindow = new AccountStatementWindow(loggedInUserId);
             statementWindow.Show();
         }
 

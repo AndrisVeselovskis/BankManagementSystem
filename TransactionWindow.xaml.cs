@@ -85,12 +85,12 @@ namespace BankManagementSystem
                 }
                 else
                 {
-                    // Regular user sees only their own accounts' transactions
+                    // Regular user sees only their own account's transactions
                     query = @"
                 SELECT AccountNumber, Type, Amount, Date 
                 FROM Transactions 
-                WHERE AccountNumber IN (
-                    SELECT AccountNumber FROM Accounts WHERE UserID = @UserID
+                WHERE AccountNumber = (
+                    SELECT AccountNumber FROM Users WHERE UserId = @UserID
                 ) 
                 ORDER BY Date DESC";
                 }
@@ -257,6 +257,18 @@ namespace BankManagementSystem
                 }
                 else if (transactionType == "Deposit")
                 {
+                    // Check if account exists
+                    string checkQuery = "SELECT COUNT(1) FROM Accounts WHERE AccountNumber = @AccountNumber";
+                    using (var checkCmd = new SQLiteCommand(checkQuery, connection))
+                    {
+                        checkCmd.Parameters.AddWithValue("@AccountNumber", accountNumber);
+                        long exists = (long)checkCmd.ExecuteScalar();
+                        if (exists == 0)
+                        {
+                            MessageBox.Show("Account does not exist.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                    }
                     ExecuteUpdate(connection, accountNumber, -amount);
                     SaveTransaction(connection, accountNumber, "Deposit", amount);
                 }
