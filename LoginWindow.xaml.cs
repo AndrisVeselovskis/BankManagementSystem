@@ -16,7 +16,11 @@ namespace BankManagementSystem
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password.Trim();
 
-            int userId = DatabaseHelper.AuthenticateUser(username, password, out string role);
+            string role;
+            bool canLogin;
+
+            int userId = DatabaseHelper.AuthenticateUser(username, password, out role, out canLogin);
+
             if (userId != -1)
             {
                 MessageBox.Show($"Welcome, {username}!");
@@ -26,48 +30,15 @@ namespace BankManagementSystem
             }
             else
             {
-                MessageBox.Show("Invalid credentials. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        public bool AuthenticateUser(string username, string password, out string role)
-        {
-            role = null;
-
-            string dbPath = @"C:\Users\Andris PC\Desktop\Skola\Induvidual project 3\BankManagementSystem\bin\Debug\bank.db";
-            string connectionString = $"Data Source={dbPath};Version=3;";
-
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                connection.Open();
-
-                // Debug: Print tables to check if "Users" exists
-                using (var command = new SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table';", connection))
-                using (var reader = command.ExecuteReader())
+                if (!canLogin)
                 {
-                    Console.WriteLine("Tables in Database:");
-                    while (reader.Read())
-                    {
-                        Console.WriteLine(reader.GetString(0)); // Prints each table name
-                    }
+                    MessageBox.Show("Your login access is disabled. Contact administrator.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
-
-                // Now run the actual authentication query
-                string query = "SELECT Role FROM Users WHERE Username = @Username AND PasswordHash = @Password";
-                using (var command = new SQLiteCommand(query, connection))
+                else
                 {
-                    command.Parameters.AddWithValue("@Username", username);
-                    command.Parameters.AddWithValue("@Password", password);
-
-                    object result = command.ExecuteScalar();
-                    if (result != null)
-                    {
-                        role = result.ToString();
-                        return true;
-                    }
+                    MessageBox.Show("Invalid credentials. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            return false;
         }
     }
 }

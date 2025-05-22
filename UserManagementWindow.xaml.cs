@@ -20,7 +20,7 @@ namespace BankManagementSystem
             using (var connection = new SQLiteConnection("Data Source=bank.db;Version=3;"))
             {
                 connection.Open();
-                string query = "SELECT UserId, Username, Role FROM Users";
+                string query = "SELECT UserId, Username, Role, CanLogin FROM Users";
 
                 using (var command = new SQLiteCommand(query, connection))
                 using (var reader = command.ExecuteReader())
@@ -31,7 +31,8 @@ namespace BankManagementSystem
                         {
                             Id = reader["UserId"],
                             Username = reader["Username"],
-                            Role = reader["Role"]
+                            Role = reader["Role"],
+                            CanLogin = Convert.ToBoolean(reader["CanLogin"])
                         });
                     }
                 }
@@ -80,6 +81,7 @@ namespace BankManagementSystem
                         return;
                     }
 
+                    // Check if account number exists
                     string checkAccountQuery = "SELECT COUNT(*) FROM Accounts WHERE AccountNumber = @AccountNumber";
                     using (var checkCmd = new SQLiteCommand(checkAccountQuery, connection))
                     {
@@ -88,6 +90,19 @@ namespace BankManagementSystem
                         if (exists == 0)
                         {
                             MessageBox.Show("Account number not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+                    }
+
+                    // Check if account number is already linked to a user
+                    string checkLinkQuery = "SELECT COUNT(*) FROM Users WHERE AccountNumber = @AccountNumber";
+                    using (var linkCmd = new SQLiteCommand(checkLinkQuery, connection))
+                    {
+                        linkCmd.Parameters.AddWithValue("@AccountNumber", accountNumber);
+                        long linked = (long)linkCmd.ExecuteScalar();
+                        if (linked > 0)
+                        {
+                            MessageBox.Show("This account is already assigned to another user.", "Conflict", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
                     }
@@ -198,6 +213,7 @@ namespace BankManagementSystem
             dynamic selectedUser = UserListView.SelectedItem;
             UsernameTextBox.Text = selectedUser.Username;
             // Other fields like role, etc. could also be prefilled here if stored in the object.
+            CanLoginCheckBox.IsChecked = selectedUser.CanLogin;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

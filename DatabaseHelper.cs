@@ -48,28 +48,37 @@ namespace BankManagementSystem
                 MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-    
 
-    public static int AuthenticateUser(string username, string password, out string role)
+        public static int AuthenticateUser(string username, string password, out string role, out bool canLogin)
         {
-            string query = "SELECT UserID, Role FROM Users WHERE Username = @Username AND PasswordHash = @Password";
+            role = null;
+            canLogin = false;
+
+            string query = "SELECT UserID, Role, CanLogin FROM Users WHERE Username = @Username AND PasswordHash = @Password";
+
             using (var connection = new SQLiteConnection($"Data Source={dbFile};Version=3;"))
             using (var command = new SQLiteCommand(query, connection))
             {
-                connection.Open();
                 command.Parameters.AddWithValue("@Username", username);
                 command.Parameters.AddWithValue("@Password", password);
+
+                connection.Open();
+
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        role = reader.GetString(1);
-                        return reader.GetInt32(0); // Return UserID
+                        canLogin = Convert.ToBoolean(reader["CanLogin"]);
+
+                        if (!canLogin)
+                            return -1; // Found user, but not allowed to log in
+
+                        role = reader["Role"].ToString();
+                        return Convert.ToInt32(reader["UserID"]);
                     }
                 }
             }
-            role = null;
-            return -1;
+            return -1; // User not found or credentials incorrect
         }
 
         public static List<Account> GetUserAccounts(int userId)
