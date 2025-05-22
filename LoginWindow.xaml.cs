@@ -16,13 +16,16 @@ namespace BankManagementSystem
             string username = UsernameTextBox.Text.Trim();
             string password = PasswordBox.Password.Trim();
 
-            string role;
-            bool canLogin;
-
-            int userId = DatabaseHelper.AuthenticateUser(username, password, out role, out canLogin);
+            int userId = DatabaseHelper.AuthenticateUser(username, password, out string role, out bool canLogin);
 
             if (userId != -1)
             {
+                if (!canLogin)
+                {
+                    MessageBox.Show("Your login access is disabled. Contact administrator.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 MessageBox.Show($"Welcome, {username}!");
                 MainWindow mainWindow = new MainWindow(userId, role);
                 mainWindow.Show();
@@ -30,14 +33,7 @@ namespace BankManagementSystem
             }
             else
             {
-                if (!canLogin)
-                {
-                    MessageBox.Show("Your login access is disabled. Contact administrator.", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                else
-                {
-                    MessageBox.Show("Invalid credentials. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show("Invalid credentials. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

@@ -68,12 +68,8 @@ namespace BankManagementSystem
                 {
                     if (reader.Read())
                     {
-                        canLogin = Convert.ToBoolean(reader["CanLogin"]);
-
-                        if (!canLogin)
-                            return -1; // Found user, but not allowed to log in
-
                         role = reader["Role"].ToString();
+                        canLogin = Convert.ToBoolean(reader["CanLogin"]);
                         return Convert.ToInt32(reader["UserID"]);
                     }
                 }
@@ -145,12 +141,12 @@ namespace BankManagementSystem
         {
             using (var connection = GetConnection())
             {
-                string query = "SELECT IsAdmin FROM Users WHERE UserID = @UserID";
+                string query = "SELECT Role FROM Users WHERE UserID = @UserID";
                 using (var command = new SQLiteCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@UserID", userId);
-                    var result = command.ExecuteScalar();
-                    return result != null && Convert.ToInt32(result) == 1;
+                    var role = command.ExecuteScalar()?.ToString();
+                    return role == "Admin";
                 }
             }
         }

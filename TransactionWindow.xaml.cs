@@ -171,13 +171,6 @@ namespace BankManagementSystem
                         senderBalance = Convert.ToDecimal(balanceCmd.ExecuteScalar());
                     }
 
-                    // Check limit
-                    if (senderBalance < amount)
-                    {
-                        MessageBox.Show("Insufficient funds for transfer.", "Blocked", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
                     // Check if it's a credit card and get current balance
                     bool isCreditCard = false;
                     decimal currentBalance = 0;
