@@ -373,6 +373,12 @@ namespace BankManagementSystem
                 }
             }
 
+            if (string.IsNullOrWhiteSpace(accountNumber))
+            {
+                MessageBox.Show("Account number is required.");
+                return;
+            }
+
             using (var connection = new SQLiteConnection("Data Source=bank.db;Version=3;"))
             {
                 connection.Open();

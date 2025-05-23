@@ -250,6 +250,21 @@ namespace BankManagementSystem
                 }
                 else if (transactionType == "Deposit")
                 {
+                    decimal mainBalance = 0;
+                    string balanceQuery = "SELECT Balance FROM Accounts WHERE AccountNumber = @AccountNumber";
+                    using (var balanceCmd = new SQLiteCommand(balanceQuery, connection))
+                    {
+                        balanceCmd.Parameters.AddWithValue("@AccountNumber", accountNumber);
+                        mainBalance = Convert.ToDecimal(balanceCmd.ExecuteScalar());
+                    }
+
+                    // Check if enough funds in main account
+                    if ((mainBalance - amount) < 0)
+                    {
+                        MessageBox.Show("Insufficient funds in main account for this deposit.", "Insufficient Funds", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
                     // Check if account exists
                     string checkQuery = "SELECT COUNT(1) FROM Accounts WHERE AccountNumber = @AccountNumber";
                     using (var checkCmd = new SQLiteCommand(checkQuery, connection))
