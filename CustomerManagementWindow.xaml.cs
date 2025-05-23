@@ -358,9 +358,9 @@ namespace BankManagementSystem
 
             if (isCreditCard)
             {
-                if (balance < -2500)
+                if (balance < -2000)
                 {
-                    MessageBox.Show("Credit card balance cannot go below -2500.", "Limit Exceeded", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Credit card balance cannot go below -2000.", "Limit Exceeded", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
             }

@@ -40,3 +40,4 @@ C:\Users\Andris PC\Desktop\Skola\Induvidual project 3\BankManagementSystem\obj\D
 C:\Users\Andris PC\Desktop\Skola\Induvidual project 3\BankManagementSystem\obj\Debug\BankManagementSystem.csproj.CopyComplete
 C:\Users\Andris PC\Desktop\Skola\Induvidual project 3\BankManagementSystem\obj\Debug\BankManagementSystem.exe
 C:\Users\Andris PC\Desktop\Skola\Induvidual project 3\BankManagementSystem\obj\Debug\BankManagementSystem.pdb
+C:\Users\Andris PC\Desktop\Skola\Induvidual project 3\BankManagementSystem\obj\Debug\BankManagementSystem.csproj.AssemblyReference.cache
